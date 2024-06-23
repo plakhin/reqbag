@@ -1,0 +1,36 @@
+name: 'Prepare App'
+description: 'Install composer dependencies, Prepare Laravel App'
+runs:
+  using: "composite"
+  steps:
+  - name: Install PHP
+    uses: shivammathur/setup-php@v2
+    with:
+      php-version: 8.3
+  - name: Get Composer Cache Directory
+    id: composer-cache
+    run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+    shell: bash
+  - uses: actions/cache@v4
+    id: actions-cache
+    with:
+      path: ${{ steps.composer-cache.outputs.dir }}
+      key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+      restore-keys: |
+        ${{ runner.os }}-composer-
+  - name: Cache Composer Dependencies
+    uses: actions/cache@v4
+    id: vendor-cache
+    with:
+      path: vendor
+      key: ${{ runner.OS }}-build-${{ hashFiles('**/composer.lock') }}
+  - name: Install Composer Dependencies
+    if: steps.vendor-cache.outputs.cache-hit != 'true'
+    run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+    shell: bash
+  - name: Prepare Laravel Application
+    run: |
+      sudo chmod -R 777 storage bootstrap/cache
+      php -r "file_exists('.env') || copy('.env.example', '.env');"
+      php artisan key:generate
+    shell: bash

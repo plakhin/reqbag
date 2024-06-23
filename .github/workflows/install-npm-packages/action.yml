@@ -1,0 +1,18 @@
+name: 'Install Node & NPM dependencies'
+runs:
+  using: "composite"
+  steps:
+  - name: Set up Node
+    uses: actions/setup-node@v4
+    with:
+      node-version: 20
+  - name: Cache NPM Packages
+    uses: actions/cache@v4
+    id: node_modules-cache
+    with:
+      path: node_modules
+      key: ${{ runner.OS }}-build-${{ hashFiles('**/package.json') }}-${{ hashFiles('**/package-lock.json') }}
+  - name: Install NPM packages
+    if: steps.node_modules-cache.outputs.cache-hit != 'true'
+    run: npm ci --no-audit
+    shell: bash

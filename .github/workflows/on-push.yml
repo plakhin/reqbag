@@ -1,0 +1,16 @@
+name: Run All Tests (on PR)
+on: push
+
+concurrency:
+  group: ci-tests-${{ github.ref }}-1
+  cancel-in-progress: true
+
+jobs:
+  codestyle:
+    uses: ./.github/workflows/check-code-style.yml
+  stat-analysis:
+    uses: ./.github/workflows/run-larastan.yml
+  tests:
+    uses: ./.github/workflows/run-pest.yml
+  # build-assets:
+  #   uses: ./.github/workflows/build-assets.yml

@@ -1,0 +1,22 @@
+name: 'Build Assets'
+runs:
+  using: "composite"
+  steps:
+  - name: Install Node & NPM dependencies
+    uses: ./.github/workflows/install-npm-packages
+  - name: Get Resources cache key
+    id: get-resources-cache-key
+    run: echo "key=$(find resources *.js -type f -exec md5sum {} \; | md5sum)" >> $GITHUB_OUTPUT
+    shell: bash
+  - name: Cache assets
+    uses: actions/cache@v4
+    id: assets-cache
+    with:
+      path: public
+      key: ${{ runner.OS }}-assetd-${{ steps.get-resources-cache-key.outputs.key }}
+      restore-keys: |
+        ${{ runner.os }}-assets-
+  - name: Build assets
+    if: steps.assets-cache.outputs.cache-hit != 'true'
+    run: npm run build
+    shell: bash

@@ -52,6 +52,8 @@ return [
     |
     */
 
+    'scheme' => env('APP_SCHEME', 'http://'),
+    'central_domain' => env('APP_CENTRAL_DOMAIN', 'localhost'),
     'url' => env('APP_URL', 'http://localhost'),
 
     /*

@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('requests', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Bag::class);
+            $table->foreignIdFor(Bag::class)->constrained()->cascadeOnDelete();
             $table->unsignedTinyInteger('method');
             $table->string('url');
             $table->json('headers');

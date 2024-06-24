@@ -1,8 +1,13 @@
 <?php
 
 use App\Enums\HttpMethod;
+use App\Http\Middleware\SaveRequest;
 use App\Models\Bag;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
+use function Pest\Laravel\assertDatabaseMissing;
+use function Pest\Laravel\get;
 use function Pest\Laravel\withHeaders;
 
 beforeEach(function () {
@@ -10,6 +15,21 @@ beforeEach(function () {
     $this->host = $this->bag->slug.'.'.config('app.central_domain');
     $this->baseUrl = config('app.scheme').$this->host;
     $this->table = $this->bag->requests()->getRelated()->getTable();
+});
+
+it('is correctly attached', function () {
+    expect(
+        Route::getRoutes()->match(
+            Request::create(config('app.scheme').'non-existent-bag.'.config('app.central_domain'))
+        )->gatherMiddleware()
+    )->toContain(
+        SaveRequest::class
+    );
+});
+
+it('returns 404 for non-existent bag subdomains', function () {
+    assertDatabaseMissing($this->bag->getTable(), ['slug' => '']);
+    get(config('app.scheme').'non-existent-bag.'.config('app.central_domain'))->assertNotFound();
 });
 
 it('correctly saves GET request', function () {

@@ -13,7 +13,7 @@ beforeEach(function () {
 });
 
 it('correctly saves GET request', function () {
-    withHeaders(['X-First' => 'foo'])->get($this->baseUrl.'/test?foo=bar')->assertNoContent();
+    withHeaders(['X-First' => 'foo'])->get($this->baseUrl.'/test?foo=bar')->assertOk();
 
     $this->assertDatabaseCount($this->table, 1)->assertDatabaseHas($this->table, [
         'bag_id' => $this->bag->id,
@@ -34,7 +34,7 @@ it('correctly saves GET request', function () {
 });
 
 it('correctly saves POST request', function () {
-    withHeaders(['X-First' => 'foo'])->post($this->baseUrl.'/test?foo=bar', ['baz' => 'qux'])->assertNoContent();
+    withHeaders(['X-First' => 'foo'])->post($this->baseUrl.'/test?foo=bar', ['baz' => 'qux'])->assertOk();
 
     $this->assertDatabaseCount($this->table, 1)->assertDatabaseHas($this->table, [
         'bag_id' => $this->bag->id,

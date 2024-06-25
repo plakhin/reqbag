@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\HttpMethod;
+use App\Services\Contracts\AiRequestAnalyzer;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,6 +21,8 @@ class Request extends Model
         'headers',
         'post',
         'raw',
+        'is_analysis_requested',
+        'analysis',
         'ips',
     ];
 
@@ -30,6 +33,7 @@ class Request extends Model
             'method' => HttpMethod::class,
             'headers' => 'array',
             'post' => 'array',
+            'is_analysis_requested' => 'boolean',
             'ips' => 'array',
         ];
     }
@@ -57,6 +61,41 @@ class Request extends Model
                 parse_str(urldecode(strval(parse_url($this->url, PHP_URL_QUERY))), $vars);
 
                 return $vars;
+            },
+        );
+    }
+
+    /** @return Attribute<mixed, ?string> */
+    protected function analysis(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value): mixed {
+                if ($value) {
+                    return $value;
+                }
+
+                $analyzer = resolve(AiRequestAnalyzer::class);
+
+                if (! $this->is_analysis_requested) {
+                    return $analyzer->isConfigured()
+                        ? 'Analysis were not performed yet.'
+                        : 'Analyzer is not configured.';
+                }
+
+                if (! $analyzer->isConfigured()) {
+                    return 'AI Analyzer is not properly configured';
+                }
+
+                try {
+                    $analysis = $analyzer->analyze($this);
+                } catch (\Exception $e) {
+                    return 'There was an error trying to analyze the request: '.$e->getMessage();
+                }
+
+                $this->analysis = $analysis;
+                $this->save();
+
+                return $analysis;
             },
         );
     }

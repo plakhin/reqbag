@@ -5,7 +5,10 @@ namespace App\Filament\Resources;
 use App\Enums\HttpMethod;
 use App\Filament\Resources\RequestResource\Pages;
 use App\Models\Request;
+use App\Services\Contracts\AiRequestAnalyzer;
+use Filament\Infolists\Components\Actions\Action;
 use Filament\Infolists\Components\KeyValueEntry;
+use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\TextEntry\TextEntrySize;
 use Filament\Infolists\Infolist;
@@ -60,7 +63,7 @@ class RequestResource extends Resource
             ->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make()])])
             ->defaultSort('created_at', 'desc')
             ->defaultPaginationPageOption(25)
-            ->poll('3s')
+            //->poll('3s')
             ->deferLoading();
     }
 
@@ -114,6 +117,28 @@ class RequestResource extends Resource
                     ->fontFamily(FontFamily::Mono)
                     ->size(TextEntrySize::ExtraSmall)
                     ->copyable(),
+                Section::make()
+                    ->id('analysis')
+                    ->schema([
+                        TextEntry::make('analysis')
+                            ->formatStateUsing(
+                                fn (string $state): ?string => preg_replace(
+                                    ['/\\\n/', '/\\\t/', '/\`((?:[^\`||\s]+))\`/U', '/```.*\n((.|\n)*)```/U'],
+                                    ['', '    ',  '<code>$1</code>', '<pre>$1</pre>'],
+                                    $state
+                                )
+                            )
+                            ->markdown()
+                            ->fontFamily(FontFamily::Mono)
+                            ->size(TextEntrySize::ExtraSmall),
+                    ])
+                    ->footerActions([
+                        Action::make('analyze')
+                            ->icon('heroicon-m-beaker')
+                            ->action(fn (Request $request) => $request->update(['is_analysis_requested' => true]))
+                            ->hidden(fn (Request $request) => $request->is_analysis_requested)
+                            ->disabled(fn () => ! resolve(AiRequestAnalyzer::class)->isConfigured()),
+                    ]),
             ])
             ->columns(5);
     }

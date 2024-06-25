@@ -63,7 +63,7 @@ class RequestResource extends Resource
             ->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make()])])
             ->defaultSort('created_at', 'desc')
             ->defaultPaginationPageOption(25)
-            //->poll('3s')
+            ->poll('3s')
             ->deferLoading();
     }
 
@@ -111,9 +111,10 @@ class RequestResource extends Resource
                     ->columnSpanFull()
                     ->formatStateUsing(
                         fn (string $state): HtmlString => new HtmlString(
-                            '<pre style="max-width: 847px; overflow: scroll"><code>'.htmlentities($state).'</code></pre>'
+                            '<pre style="max-width: 848px; overflow: scroll">'.htmlentities($state).'</pre>'
                         )
                     )
+                    ->markdown()
                     ->fontFamily(FontFamily::Mono)
                     ->size(TextEntrySize::ExtraSmall)
                     ->copyable(),

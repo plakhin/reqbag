@@ -57,8 +57,14 @@ class RequestResource extends Resource
                 SelectFilter::make('method')->multiple()->options(HttpMethod::class),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make()->iconButton()->icon(null),
-                Tables\Actions\DeleteAction::make()->iconButton(),
+                Tables\Actions\ViewAction::make()
+                    ->iconButton()
+                    ->icon(null)
+                    ->mountUsing(function (Table $table) {
+                        $table->poll(null);
+                    }),
+                Tables\Actions\DeleteAction::make()
+                    ->iconButton(),
             ])
             ->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make()])])
             ->defaultSort('created_at', 'desc')

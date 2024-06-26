@@ -32,16 +32,14 @@ class ManageRequests extends ManageRecords
                 ->action(function (array $data): void {
                     Bag::create($data);
                 }),
-            Action::make('Delete request bag')
+            Action::make('Delete request bags')
                 ->icon('heroicon-m-x-circle')
                 ->modalIcon('heroicon-m-x-circle')
                 ->color('danger')
                 ->outlined()
-                ->form([Select::make('bag')->required()->options(Bag::pluck('slug', 'id'))])
+                ->form([Select::make('bags')->multiple()->required()->options(Bag::pluck('slug', 'id'))])
                 ->requiresConfirmation()
-                ->action(function (array $data): void {
-                    Bag::where('id', $data['bag'])->delete();
-                })
+                ->action(fn (array $data): int => Bag::destroy($data['bags']))
                 ->hidden(Bag::doesntExist()),
         ];
     }

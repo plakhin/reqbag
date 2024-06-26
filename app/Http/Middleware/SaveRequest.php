@@ -18,7 +18,7 @@ class SaveRequest
     public function handle(Request $request, Closure $next): Response
     {
         Bag::where('slug', $request->bag)
-            ->firstOrFail()
+            ->sole()
             ->requests()->create([
                 'method' => HttpMethod::{$request->method()},
                 'url' => $request->fullUrl(),

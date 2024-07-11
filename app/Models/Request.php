@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\HttpMethod;
 use App\Services\Contracts\AiRequestAnalyzer;
+use Database\Factories\RequestFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Request extends Model
 {
+    /** @use HasFactory<RequestFactory> */
     use HasFactory;
 
     public const ?string UPDATED_AT = null;

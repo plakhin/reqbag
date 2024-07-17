@@ -117,7 +117,7 @@ class RequestResource extends Resource
                     ->columnSpanFull()
                     ->formatStateUsing(
                         fn (string $state): HtmlString => new HtmlString(
-                            '<pre style="max-width: 848px; overflow: scroll">'.htmlentities($state).'</pre>'
+                            '<pre style="max-width: 53rem; overflow: scroll">'.htmlentities($state).'</pre>'
                         )
                     )
                     ->markdown()
@@ -131,7 +131,7 @@ class RequestResource extends Resource
                             ->formatStateUsing(
                                 fn (string $state): ?string => preg_replace(
                                     ['/\\\n/', '/\\\t/', '/\`((?:[^\`||\s]+))\`/U', '/```.*\n((.|\n)*)```/U'],
-                                    ['', '    ',  '<code>$1</code>', '<pre>$1</pre>'],
+                                    ['', '    ',  '<code>$1</code>', '<pre style="max-width: 50rem; overflow: scroll">$1</pre>'],
                                     $state
                                 )
                             )

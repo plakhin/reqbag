@@ -9,7 +9,7 @@ class OpenAi
     public static function request(string $prompt): ?string
     {
         $result = OpenAiClient::chat()->create([
-            'model' => 'gpt-4o',
+            'model' => config('openai.model', 'gpt-4o-mini'),
             'messages' => [['role' => 'user', 'content' => $prompt]],
         ]);
 

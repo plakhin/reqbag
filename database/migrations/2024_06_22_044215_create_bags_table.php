@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('slug')->unique();
             $table->timestamp('created_at');
-            $table->softDeletes();
         });
     }
 

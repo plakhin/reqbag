@@ -15,10 +15,9 @@ CREATE UNIQUE INDEX "failed_jobs_uuid_unique" on "failed_jobs" ("uuid");
 CREATE TABLE IF NOT EXISTS "bags" ("id" integer primary key autoincrement not null, "slug" varchar not null, "created_at" datetime not null);
 CREATE UNIQUE INDEX "bags_slug_unique" on "bags" ("slug");
 CREATE TABLE IF NOT EXISTS "requests" ("id" integer primary key autoincrement not null, "bag_id" integer not null, "method" integer not null, "url" varchar not null, "headers" text not null, "payload" text not null, "raw" text not null, "ips" text not null, "created_at" datetime not null, "analysis" text, "is_analysis_requested" tinyint(1) not null default '0', foreign key("bag_id") references "bags"("id") on delete cascade);
+
 INSERT INTO migrations VALUES(1,'0001_01_01_000000_create_users_table',1);
 INSERT INTO migrations VALUES(2,'0001_01_01_000001_create_cache_table',1);
 INSERT INTO migrations VALUES(3,'0001_01_01_000002_create_jobs_table',1);
 INSERT INTO migrations VALUES(4,'2024_06_22_044215_create_bags_table',1);
 INSERT INTO migrations VALUES(5,'2024_06_22_044219_create_requests_table',1);
-INSERT INTO migrations VALUES(6,'2024_06_25_062901_add_is_analysis_requested_and_analysis_columns_to_requests_table',1);
-INSERT INTO migrations VALUES(7,'2024_06_26_020210_drop_soft_deleted_at_column_from_bags_table',1);

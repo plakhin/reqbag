@@ -20,6 +20,8 @@ return new class extends Migration
             $table->json('headers');
             $table->json('payload');
             $table->text('raw');
+            $table->text('analysis')->nullable();
+            $table->boolean('is_analysis_requested')->default(false);
             $table->json('ips');
             $table->timestamp('created_at');
         });

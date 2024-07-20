@@ -23,7 +23,7 @@ class SaveRequest
                 'method' => HttpMethod::{$request->method()},
                 'url' => $request->fullUrl(),
                 'headers' => array_diff_key($request->header(), ['cookie' => []]),
-                'post' => $request->post(),
+                'payload' => $request->post(),
                 'raw' => (string) $request,
                 'ips' => $request->ips(),
             ]);

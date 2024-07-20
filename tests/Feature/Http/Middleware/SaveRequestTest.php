@@ -47,7 +47,7 @@ it('correctly saves GET request', function () {
             'accept-charset' => ['ISO-8859-1,utf-8;q=0.7,*;q=0.7'],
             'x-first' => ['foo'],
         ]),
-        'post' => json_encode([]),
+        'payload' => json_encode([]),
         'raw' => "GET /test?foo=bar HTTP/1.1\r\nAccept:          text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Charset:  ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\nAccept-Language: en-us,en;q=0.5\r\nHost:            {$this->host}\r\nUser-Agent:      Symfony\r\nX-First:         foo\r\n\r\n",
         'ips' => json_encode(['127.0.0.1']),
     ]);
@@ -69,7 +69,7 @@ it('correctly saves POST request', function () {
             'x-first' => ['foo'],
             'content-type' => ['application/x-www-form-urlencoded'],
         ]),
-        'post' => json_encode(['baz' => 'qux']),
+        'payload' => json_encode(['baz' => 'qux']),
         'raw' => "POST /test?foo=bar HTTP/1.1\r\nAccept:          text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Charset:  ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\nAccept-Language: en-us,en;q=0.5\r\nContent-Type:    application/x-www-form-urlencoded\r\nHost:            {$this->host}\r\nUser-Agent:      Symfony\r\nX-First:         foo\r\n\r\n",
         'ips' => json_encode(['127.0.0.1']),
     ]);

@@ -21,7 +21,7 @@ class Request extends Model
         'method',
         'url',
         'headers',
-        'post',
+        'payload',
         'raw',
         'is_analysis_requested',
         'analysis',
@@ -34,7 +34,7 @@ class Request extends Model
         return [
             'method' => HttpMethod::class,
             'headers' => 'array',
-            'post' => 'array',
+            'payload' => 'array',
             'is_analysis_requested' => 'boolean',
             'ips' => 'array',
         ];

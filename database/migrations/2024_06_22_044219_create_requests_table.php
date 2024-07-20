@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedTinyInteger('method');
             $table->string('url');
             $table->json('headers');
-            $table->json('post');
+            $table->json('payload');
             $table->text('raw');
             $table->json('ips');
             $table->timestamp('created_at');

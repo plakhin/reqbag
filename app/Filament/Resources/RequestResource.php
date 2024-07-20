@@ -106,7 +106,7 @@ class RequestResource extends Resource
                 KeyValueEntry::make('getVariables')
                     ->label('GET Variables')
                     ->columnSpanFull(),
-                KeyValueEntry::make('post')
+                KeyValueEntry::make('payload')
                     ->label('Payload')
                     ->columnSpanFull(),
                 KeyValueEntry::make('flatHeaders')

@@ -40,6 +40,7 @@ class RequestResource extends Resource
                     ->formatStateUsing(fn (Request $request) => $request->method->name) //@phpstan-ignore-line
                     ->color(fn (HttpMethod $state): string => self::httpMethodBageColor($state)),
                 Tables\Columns\TextColumn::make('url')
+                    ->limit(128)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('ips')
                     ->label('IP')
@@ -102,6 +103,9 @@ class RequestResource extends Resource
                     ->columnSpanFull()
                     ->fontFamily(FontFamily::Mono)
                     ->size(TextEntrySize::ExtraSmall)
+                    ->formatStateUsing(fn (string $state): HtmlString => new HtmlString(
+                        '<pre style="max-width: 53rem; overflow: scroll">'.$state.'</pre>'
+                    ))
                     ->copyable(),
                 KeyValueEntry::make('getVariables')
                     ->label('GET Variables')

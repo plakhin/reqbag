@@ -1,6 +1,6 @@
 <?php
 
-uses(
-    Tests\TestCase::class,
-    Illuminate\Foundation\Testing\RefreshDatabase::class,
-)->in('Feature');
+pest()
+    ->extends(Tests\TestCase::class)
+    ->use(Illuminate\Foundation\Testing\LazilyRefreshDatabase::class)
+    ->in('Feature');

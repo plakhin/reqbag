@@ -32,6 +32,10 @@ parameters:
         # Pest implicitly binds $this to the current test case
         # @see https://pestphp.com/docs/underlying-test-case
         -
-            message: '#^Undefined variable: \$this$#'
+            message: '#^Access to an undefined property PHPUnit\\Framework\\TestCase::\$#'
+            paths:
+                - tests/*
+        -
+            message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase::assertDatabaseCount\(\).$#'
             paths:
                 - tests/*

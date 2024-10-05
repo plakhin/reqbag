@@ -40,7 +40,7 @@ class ManageRequests extends ManageRecords
                 .' will be stored to the database and displayed on this page grouped by bag.'
             )
             ->form([
-                TextInput::make('slug')->label('Bag subdomain')->required()->unique((new Bag())->getTable(), 'slug'),
+                TextInput::make('slug')->label('Bag subdomain')->required()->unique((new Bag)->getTable(), 'slug'),
             ])
             ->modalSubmitActionLabel('Create')
             ->action(function (array $data): void {

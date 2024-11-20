@@ -16,7 +16,7 @@ class Bag extends Model
 
     protected $fillable = ['slug'];
 
-    /** @return HasMany<Request> */
+    /** @return HasMany<Request, $this> */
     public function requests(): HasMany
     {
         return $this->hasMany(Request::class);

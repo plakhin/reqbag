@@ -40,7 +40,7 @@ class Request extends Model
         ];
     }
 
-    /** @return BelongsTo<Bag, Request> */
+    /** @return BelongsTo<Bag, $this> */
     public function bag(): BelongsTo
     {
         return $this->belongsTo(Bag::class);

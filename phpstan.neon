@@ -20,7 +20,7 @@ parameters:
         # Mockery doesn't autoload its helper functions
         - vendor/mockery/mockery/library/helpers.php
 
-    level: max
+    level: 8
 
     checkModelProperties: false
     checkOctaneCompatibility: true

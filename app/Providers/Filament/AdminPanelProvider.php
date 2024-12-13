@@ -20,7 +20,7 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->id('reqbag')
-            ->domain(strval(config('app.central_domain'))) //@phpstan-ignore-line: strval() actually expects mixed type
+            ->domain(strval(config('app.central_domain')))
             ->default()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->topNavigation()

@@ -37,7 +37,7 @@ class RequestResource extends Resource
                     ->weight(FontWeight::Bold),
                 Tables\Columns\TextColumn::make('method')
                     ->badge()
-                    ->formatStateUsing(fn (Request $request) => $request->method->name) //@phpstan-ignore-line
+                    ->formatStateUsing(fn (Request $request) => $request->method->name) // @phpstan-ignore-line
                     ->color(fn (HttpMethod $state): string => self::httpMethodBageColor($state)),
                 Tables\Columns\TextColumn::make('url')
                     ->limit(128)
@@ -82,7 +82,7 @@ class RequestResource extends Resource
                     ->label('')
                     ->alignLeft()
                     ->badge()
-                    ->formatStateUsing(fn (Request $request) => $request->method->name) //@phpstan-ignore-line
+                    ->formatStateUsing(fn (Request $request) => $request->method->name) // @phpstan-ignore-line
                     ->color(fn (HttpMethod $state): string => self::httpMethodBageColor($state)),
                 TextEntry::make('bag.slug')
                     ->alignLeft(),

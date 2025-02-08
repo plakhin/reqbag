@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\AiAnalysis;
 use App\Models\Bag;
-use App\Models\Request;
 use Illuminate\Database\Seeder;
+use Plakhin\RequestChronicle\Models\Request;
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,7 +13,10 @@ class DatabaseSeeder extends Seeder
     {
         Bag::factory()
             ->test()
-            ->has(Request::factory()->count(10))
+            ->has(Request::factory()->count(2)->has(AiAnalysis::factory()->successful(), 'analysis'))
+            ->has(Request::factory()->count(2)->has(AiAnalysis::factory()->unsuccessful(), 'analysis'))
+            ->has(Request::factory()->count(1)->hasAnalysis())
+            ->has(Request::factory()->count(5))
             ->create();
     }
 }

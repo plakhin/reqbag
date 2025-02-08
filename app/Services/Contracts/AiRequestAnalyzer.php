@@ -2,7 +2,7 @@
 
 namespace App\Services\Contracts;
 
-use App\Models\Request;
+use Plakhin\RequestChronicle\Models\Request;
 
 interface AiRequestAnalyzer
 {

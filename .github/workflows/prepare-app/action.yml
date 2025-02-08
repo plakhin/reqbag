@@ -6,7 +6,7 @@ runs:
   - name: Install PHP
     uses: shivammathur/setup-php@v2
     with:
-      php-version: 8.3
+      php-version: 8.4
   - name: Get Composer Cache Directory
     id: composer-cache
     run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT

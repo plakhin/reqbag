@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Request;
 use App\Services\Contracts\AiRequestAnalyzer;
+use Plakhin\RequestChronicle\Models\Request;
 
 class OpenAiRequestAnalyzer implements AiRequestAnalyzer
 {

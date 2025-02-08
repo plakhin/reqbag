@@ -5,6 +5,8 @@
 Working on two recent clients projects I had to deal with webhooks/callbacks from and to 3rd party APIs and while using external tools like Pipedream or [Request Baskets](https://rbaskets.in/) on the first project wasn't an issue, for the second one external tools were not allowed due to security policy. I didn't want a local/staging app written in Go or running in Docker and being a huge fan of Laravel, I quickly implemented a basic functionality with a fresh Laravel installation and spinned up a host on our staging server which I called "Reqbag", that was enough.
 However once the project was finished I decided to spend few days refactoring and enhancing reqbag a bit and open-source it so it could be useful for someone else or serve a kind of simple demo application.
 
+Later, all the functionality regarding saving incoming HTTP requests into the DB was extracted to the [`plakhin/laravel-request-chronicle` package](https://github.com/plakhin/laravel-request-chronicle) and the app was refactored to utilize it.
+
 Feel free to create any issues / pull requests.
 
 ## Tech stack

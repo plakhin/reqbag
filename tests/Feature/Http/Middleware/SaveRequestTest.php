@@ -1,11 +1,13 @@
 <?php
 
-use App\Enums\HttpMethod;
-use App\Http\Middleware\SaveRequest;
 use App\Models\Bag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Plakhin\RequestChronicle\Enums\HttpMethod;
+use Plakhin\RequestChronicle\Http\Middleware\SaveRequest;
 
+use function Pest\Laravel\assertDatabaseCount;
+use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertDatabaseMissing;
 use function Pest\Laravel\get;
 use function Pest\Laravel\withHeaders;
@@ -22,9 +24,7 @@ it('is correctly attached', function () {
         Route::getRoutes()->match(
             Request::create(config('app.scheme').'non-existent-bag.'.config('app.central_domain'))
         )->gatherMiddleware()
-    )->toContain(
-        SaveRequest::class
-    );
+    )->toContain(SaveRequest::class.':bag');
 });
 
 it('returns 404 for non-existent bag subdomains', function () {
@@ -35,8 +35,10 @@ it('returns 404 for non-existent bag subdomains', function () {
 it('correctly saves GET request', function () {
     withHeaders(['X-First' => 'foo'])->get($this->baseUrl.'/test?foo=bar')->assertOk();
 
-    $this->assertDatabaseCount($this->table, 1)->assertDatabaseHas($this->table, [
-        'bag_id' => $this->bag->id,
+    assertDatabaseCount($this->table, 1);
+    assertDatabaseHas($this->table, [
+        'model_id' => $this->bag->getKey(),
+        'model_type' => $this->bag::class,
         'method' => HttpMethod::GET,
         'url' => $this->baseUrl.'/test?foo=bar',
         'headers' => json_encode([
@@ -57,7 +59,8 @@ it('correctly saves POST request', function () {
     withHeaders(['X-First' => 'foo'])->post($this->baseUrl.'/test?foo=bar', ['baz' => 'qux'])->assertOk();
 
     $this->assertDatabaseCount($this->table, 1)->assertDatabaseHas($this->table, [
-        'bag_id' => $this->bag->id,
+        'model_id' => $this->bag->getKey(),
+        'model_type' => $this->bag::class,
         'method' => HttpMethod::POST,
         'url' => $this->baseUrl.'/test?foo=bar',
         'headers' => json_encode([

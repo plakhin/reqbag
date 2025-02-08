@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\HttpMethod;
 use App\Filament\Resources\RequestResource\Pages;
-use App\Models\Request;
+use App\Models\AiAnalysis;
+use App\Models\Bag;
 use App\Services\Contracts\AiRequestAnalyzer;
 use Filament\Infolists\Components\Actions\Action;
 use Filament\Infolists\Components\KeyValueEntry;
@@ -19,7 +19,10 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn\TextColumnSize;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\HtmlString;
+use Plakhin\RequestChronicle\Enums\HttpMethod;
+use Plakhin\RequestChronicle\Models\Request;
 
 class RequestResource extends Resource
 {
@@ -32,12 +35,13 @@ class RequestResource extends Resource
         return $table
             ->striped()
             ->columns([
-                Tables\Columns\TextColumn::make('bag.slug')
+                Tables\Columns\TextColumn::make('model.slug')
+                    ->label('Bag')
                     ->size(TextColumnSize::ExtraSmall)
                     ->weight(FontWeight::Bold),
                 Tables\Columns\TextColumn::make('method')
                     ->badge()
-                    ->formatStateUsing(fn (Request $request) => $request->method->name) // @phpstan-ignore-line
+                    ->formatStateUsing(fn (Request $request) => $request->method->name)
                     ->color(fn (HttpMethod $state): string => self::httpMethodBageColor($state)),
                 Tables\Columns\TextColumn::make('url')
                     ->limit(128)
@@ -54,7 +58,16 @@ class RequestResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                SelectFilter::make('bag')->relationship('bag', 'slug'),
+                SelectFilter::make('bag')
+                    ->options(fn () => Bag::pluck('slug', 'id')->toArray())
+                    ->query(
+                        fn (Builder $query, array $data) => $query->when(
+                            $data['value'],
+                            fn (Builder $query) => $query
+                                ->where('model_type', Bag::class)
+                                ->where('model_id', $data['value'])
+                        )
+                    ),
                 SelectFilter::make('method')->multiple()->options(HttpMethod::class),
             ])
             ->actions([
@@ -82,9 +95,10 @@ class RequestResource extends Resource
                     ->label('')
                     ->alignLeft()
                     ->badge()
-                    ->formatStateUsing(fn (Request $request) => $request->method->name) // @phpstan-ignore-line
+                    ->formatStateUsing(fn (Request $request) => $request->method->name)
                     ->color(fn (HttpMethod $state): string => self::httpMethodBageColor($state)),
-                TextEntry::make('bag.slug')
+                TextEntry::make('model.slug')
+                    ->label('Bag')
                     ->alignLeft(),
                 TextEntry::make('ips')
                     ->label('IP')
@@ -131,13 +145,28 @@ class RequestResource extends Resource
                 Section::make()
                     ->id('analysis')
                     ->schema([
-                        TextEntry::make('analysis')
+                        TextEntry::make('analysis.analysis_result.response')
                             ->formatStateUsing(
                                 fn (string $state): ?string => preg_replace(
-                                    ['/\\\n/', '/\\\t/', '/\`((?:[^\`||\s]+))\`/U', '/```.*\n((.|\n)*)```/U'],
-                                    ['', '    ',  '<code>$1</code>', '<pre style="max-width: 50rem; overflow: scroll">$1</pre>'],
+                                    [
+                                        '/\\\n/',
+                                        '/\\\t/',
+                                        '/\`((?:[^\`||\s]+))\`/U',
+                                        '/```.*\n((.|\n)*)```/U',
+                                    ],
+                                    [
+                                        '',
+                                        '    ',
+                                        '<code>$1</code>',
+                                        '<pre style="max-width: 50rem; overflow: scroll">$1</pre>',
+                                    ],
                                     $state
                                 )
+                            )
+                            ->default(
+                                resolve(AiRequestAnalyzer::class)->isConfigured()
+                                    ? __('Analysis were not performed yet.')
+                                    : __('AI Analyzer is not properly configured.')
                             )
                             ->markdown()
                             ->fontFamily(FontFamily::Mono)
@@ -146,9 +175,13 @@ class RequestResource extends Resource
                     ->footerActions([
                         Action::make('analyze')
                             ->icon('heroicon-m-beaker')
-                            ->action(fn (Request $request) => $request->update(['is_analysis_requested' => true]))
-                            ->hidden(fn (Request $request) => $request->is_analysis_requested)
-                            ->disabled(fn () => ! resolve(AiRequestAnalyzer::class)->isConfigured()),
+                            ->hidden(fn (Request $request) => $request
+                                ->load('analysis')
+                                ->getRelation('analysis')
+                                ?->analysis_result
+                                ?->is_successful)
+                            ->disabled(fn () => ! resolve(AiRequestAnalyzer::class)->isConfigured())
+                            ->action(fn (Request $request) => AiAnalysis::makeForRequest($request)),
                     ]),
             ])
             ->columns(5);

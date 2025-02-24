@@ -14,14 +14,14 @@ use function Pest\Laravel\assertDatabaseMissing;
 use function Pest\Laravel\get;
 use function Pest\Laravel\withHeaders;
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->bag = Bag::factory()->create();
     $this->host = $this->bag->slug.'.'.config('app.central_domain');
     $this->baseUrl = config('app.scheme').$this->host;
     $this->table = $this->bag->requests()->getRelated()->getTable();
 });
 
-it('is correctly attached', function () {
+it('is correctly attached', function (): void {
     expect(
         Route::getRoutes()->match(
             Request::create(config('app.scheme').'non-existent-bag.'.config('app.central_domain'))
@@ -29,12 +29,12 @@ it('is correctly attached', function () {
     )->toContain(SaveRequest::class.':bag');
 });
 
-it('returns 404 for non-existent bag subdomains', function () {
+it('returns 404 for non-existent bag subdomains', function (): void {
     assertDatabaseMissing($this->bag->getTable(), ['slug' => '']);
     get(config('app.scheme').'non-existent-bag.'.config('app.central_domain'))->assertNotFound();
 });
 
-it('correctly saves GET request', function () {
+it('correctly saves GET request', function (): void {
     withHeaders(['X-First' => 'foo'])->get($this->baseUrl.'/test?foo=bar')->assertOk();
 
     assertDatabaseCount($this->table, 1);
@@ -57,7 +57,7 @@ it('correctly saves GET request', function () {
     ]);
 });
 
-it('correctly saves POST request', function () {
+it('correctly saves POST request', function (): void {
     withHeaders(['X-First' => 'foo'])->post($this->baseUrl.'/test?foo=bar', ['baz' => 'qux'])->assertOk();
 
     $this->assertDatabaseCount($this->table, 1)->assertDatabaseHas($this->table, [

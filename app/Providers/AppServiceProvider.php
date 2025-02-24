@@ -19,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->scoped(AiRequestAnalyzer::class, fn () => new OpenAiRequestAnalyzer);
+        $this->app->scoped(AiRequestAnalyzer::class, fn (): OpenAiRequestAnalyzer => new OpenAiRequestAnalyzer);
     }
 
     /**

@@ -7,7 +7,7 @@ use OpenAI\Laravel\Facades\OpenAI as OpenAiClient;
 use OpenAI\Responses\Chat\CreateResponse;
 use Plakhin\RequestChronicle\Models\Request;
 
-test('isConfigured()', function () {
+test('isConfigured()', function (): void {
     config(['openai.api_key' => null, 'openai.organization' => null]);
     expect(resolve(AiRequestAnalyzer::class)->isConfigured())->toBeFalse();
 
@@ -18,7 +18,7 @@ test('isConfigured()', function () {
     expect(resolve(AiRequestAnalyzer::class)->isConfigured())->toBeTrue();
 });
 
-test('analyze()', function () {
+test('analyze()', function (): void {
     OpenAiClient::fake([CreateResponse::fake(['choices' => [['message' => ['content' => 'test']]]])]);
 
     /** @var Request $request */

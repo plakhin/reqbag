@@ -77,7 +77,7 @@ class RequestResource extends Resource
                 Tables\Actions\ViewAction::make()
                     ->iconButton()
                     ->icon(null)
-                    ->mountUsing(function (Table $table) {
+                    ->mountUsing(function (Table $table): void {
                         $table->poll(null);
                     }),
                 Tables\Actions\DeleteAction::make()
@@ -183,8 +183,8 @@ class RequestResource extends Resource
                                 ->getRelation('analysis')
                                 ?->analysis_result
                                 ?->is_successful)
-                            ->disabled(fn () => ! resolve(AiRequestAnalyzer::class)->isConfigured())
-                            ->action(fn (Request $request) => AiAnalysis::makeForRequest($request)),
+                            ->disabled(fn (): bool => ! resolve(AiRequestAnalyzer::class)->isConfigured())
+                            ->action(fn (Request $request): AiAnalysis => AiAnalysis::makeForRequest($request)),
                     ]),
             ])
             ->columns(5);

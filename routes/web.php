@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Bag;
 use Illuminate\Support\Facades\Route;
 use Plakhin\RequestChronicle\Http\Middleware\SaveRequest;

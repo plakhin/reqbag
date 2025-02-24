@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Services\Contracts\AiRequestAnalyzer;
 use OpenAI\Laravel\Facades\OpenAI as OpenAiClient;
 use OpenAI\Responses\Chat\CreateResponse;

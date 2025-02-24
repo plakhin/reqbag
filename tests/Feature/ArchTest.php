@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Providers\Filament\AdminPanelProvider;
 
 arch()->preset()->laravel()->ignoring( // @phpstan-ignore-line: PHPStan doesn't recognize preset()

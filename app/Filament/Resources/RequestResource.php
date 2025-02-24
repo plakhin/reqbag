@@ -8,6 +8,7 @@ use App\Filament\Resources\RequestResource\Pages;
 use App\Models\AiAnalysis;
 use App\Models\Bag;
 use App\Services\Contracts\AiRequestAnalyzer;
+use Carbon\Carbon;
 use Filament\Infolists\Components\Actions\Action;
 use Filament\Infolists\Components\KeyValueEntry;
 use Filament\Infolists\Components\Section;
@@ -56,7 +57,7 @@ class RequestResource extends Resource
                     ->dateTime()
                     ->since()
                     ->size(TextColumnSize::ExtraSmall)
-                    ->tooltip(fn (Request $request): string => $request->created_at)
+                    ->tooltip(fn (Request $request): Carbon => $request->created_at)
                     ->sortable(),
             ])
             ->filters([
